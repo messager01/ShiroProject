@@ -14,21 +14,78 @@
         http://www.springframework.org/schema/tx/spring-tx.xsd
 ">
 
+
+    <!-- 配置 表单认证过滤器  用来监听认证是否通过 -->
+    <bean id="myFormFilter" class="com.itlike.web.filiter.MyFormFilter"/>
+
     <!-- 配置shiro过滤器 -->
     <bean id="shiroFilter" class="org.apache.shiro.spring.web.ShiroFilterFactoryBean">
+
+
+        <!-- 如果发现请求是loginUrl的值  会直接去做认证
+            其他的请求会进行判断当前是否认证？
+            如果没有认证  跳转到对应的loginUrl的 value
+        -->
+        <!--  配置登录认证的路径  -->
+        <property name="loginUrl" value="/login"/>
         <property name="securityManager" ref="securityManager"></property>
+
+
+        <!-- 配置监听表单过滤器-->
+        <property name="filters">
+            <map>
+                <entry key="authc" value-ref="myFormFilter"/>
+            </map>
+        </property>
         <!-- 配置shiro过滤器pattern -->
         <property name="filterChainDefinitions">
             <value>
                 /static/** = anon   <!--不需要登录验证-->
                 /login.jsp = anon   <!--不需要登录验证-->
+                /logout = logout  <!--  取消认证  -->
                 /**=authc     <!--除指定请求外,其它所有的请求都需要身份验证-->
+
             </value>
         </property>
     </bean>
-    <!-- 配置shiro安全管理器 -->
-    <bean id="securityManager" class="org.apache.shiro.web.mgt.DefaultWebSecurityManager"></bean>
 
+
+    <!--  配置自定义realm  -->
+    <bean id="employeeRealm" class="com.itlike.web.realm.EmployeeRealm">
+        <property name="credentialsMatcher" ref="credentialsMatcher"/>
+    </bean>
+
+    <!-- 凭证匹配器 -->
+    <bean id="credentialsMatcher" class="org.apache.shiro.authc.credential.HashedCredentialsMatcher">
+        <!-- 散列算法 -->
+        <property name="hashAlgorithmName" value="md5"/>
+        <!-- 散列次数 -->
+        <property name="hashIterations" value="3"></property>
+    </bean>
+
+    <!-- 缓存管理器 -->
+    <bean id="ehCache" class="org.apache.shiro.cache.ehcache.EhCacheManager">
+        <property name="cacheManagerConfigFile" value="classpath:shiro-ehcache.xml"/>
+    </bean>
+
+
+    <!-- 配置shiro安全管理器 -->
+    <bean id="securityManager" class="org.apache.shiro.web.mgt.DefaultWebSecurityManager">
+        <!-- 注入自定义的realm -->
+        <property name="realm" ref="employeeRealm"/>
+        <!--   注入缓存管理器  -->
+        <property name="cacheManager" ref="ehCache"/>
+    </bean>
+
+    <!--
+    配置为true即使用cglib继承的方式,
+    false为jdk的接口动态代理   控制器没有实现接口
+    -->
+    <aop:config proxy-target-class="true" ></aop:config>
+    <!-- 使用第三方去扫描shiro的注解 -->
+    <bean class="org.apache.shiro.spring.security.interceptor.AuthorizationAttributeSourceAdvisor ">
+        <property name="securityManager" ref="securityManager"></property>
+    </bean>
 
 
 

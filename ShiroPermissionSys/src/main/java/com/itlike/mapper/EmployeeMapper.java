@@ -4,6 +4,7 @@ import com.itlike.domain.Employee;
 import com.itlike.domain.QueryVo;
 import org.apache.ibatis.annotations.Param;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public interface EmployeeMapper {
@@ -22,4 +23,13 @@ public interface EmployeeMapper {
     void insertEmployeeAndRoleRel(@Param("id") Long id, @Param("rid") Long rid);
     /*打破与角色之间关系*/
     void deleteRoleRel(Long id);
+
+    Employee getEmployeeWithUsername(String username);
+
+    ArrayList<String> getRolesById(Long id);
+
+    ArrayList<String> getPermissionById(Long id);
+
+    List<Employee> getAllEmployee();
+
 }

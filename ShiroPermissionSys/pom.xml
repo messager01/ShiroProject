@@ -5,11 +5,11 @@
   <modelVersion>4.0.0</modelVersion>
 
   <groupId>com.itlike</groupId>
-  <artifactId>PromissionPro</artifactId>
+  <artifactId>ShiroPermissionSys</artifactId>
   <version>1.0</version>
   <packaging>war</packaging>
 
-  <name>PromissionPro Maven Webapp</name>
+  <name>ShiroPermissionSys Maven Webapp</name>
   <!-- FIXME change it to the project's website -->
   <url>http://www.example.com</url>
 
@@ -257,11 +257,19 @@
       <artifactId>shiro-spring</artifactId>
       <version>1.4.0</version>
     </dependency>
+    <dependency>
+      <groupId>org.apache.poi</groupId>
+      <artifactId>poi</artifactId>
+      <version>4.0.1</version>
+    </dependency>
+
+
+
 
   </dependencies>
 
   <build>
-    <finalName>PromissionPro</finalName>
+    <finalName>ShiroPermissionSys</finalName>
     <plugins>
       <plugin>
         <groupId>org.mybatis.generator</groupId>

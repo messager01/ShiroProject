@@ -8,10 +8,12 @@ import com.itlike.domain.QueryVo;
 import com.itlike.domain.Role;
 import com.itlike.mapper.EmployeeMapper;
 import com.itlike.service.EmployeeService;
+import org.apache.shiro.crypto.hash.Md5Hash;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -36,6 +38,12 @@ public class EmployeeServiceImpl implements EmployeeService {
     /*保存员工*/
     @Override
     public void saveEmployee(Employee employee) {
+
+        // 把密码进行加密
+
+        Md5Hash md5Hash = new Md5Hash(employee.getPassword(), "lulu", 3);
+        String s = md5Hash.toString();
+        employee.setPassword(s);
         /*保存员工*/
         employeeMapper.insert(employee);
         /*保存员工和 角色 关系*/
@@ -60,6 +68,29 @@ public class EmployeeServiceImpl implements EmployeeService {
     @Override
     public void updateState(Long id) {
         employeeMapper.updateState(id);
+    }
+
+    @Override
+    public Employee getEmployeeWithUsername(String username) {
+        return employeeMapper.getEmployeeWithUsername(username);
+    }
+
+    @Override
+    public ArrayList<String> getRolesById(Long id) {
+
+        return  employeeMapper.getRolesById(id);
+    }
+
+    @Override
+    public ArrayList<String> getPermissionsById(Long id) {
+
+        return employeeMapper.getPermissionById(id);
+    }
+
+    @Override
+    public List<Employee> getAllEmployee() {
+
+        return employeeMapper.getAllEmployee();
     }
 
 

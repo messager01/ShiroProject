@@ -98,4 +98,29 @@
     <include refid="where_sql"/>
     order by e.id
   </select>
+
+  <!--  根据用户名查询用户-->
+    <select id="getEmployeeWithUsername" resultType="com.itlike.domain.Employee">
+      select * from employee where username = #{username}
+    </select>
+
+  <!--  根据id查询角色 -->
+  <select id="getRolesById" resultType="java.lang.String">
+    select r.rnum from employee_role_rel as er, role as r, employee as e
+    where e.id = er.eid and er.rid = r.rid and e.id=#{id}
+
+  </select>
+
+  <!-- 根据 id  查询权限  -->
+  <select id="getPermissionById" resultType="java.lang.String">
+    SELECT distinct p.presource from permission as p WHERE pid in
+    (
+      SELECT rp.pid from employee_role_rel as er,role_permission_rel as rp
+      where er.rid = rp.rid and er.eid = #{id}
+    )
+
+  </select>
+    <select id="getAllEmployee" resultType="com.itlike.domain.Employee">
+      select * from employee;
+    </select>
 </mapper>
